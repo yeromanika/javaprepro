@@ -1,17 +1,30 @@
-package org.example;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+    private static final String URL = "jdbc:mysql://localhost:3306/sys";
+    private static final String USER = "root"; // например, root
+    private static final String PASSWORD = "qW3$rM6#pL9Z";
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
+    public static void main(String[] args) {
+        System.out.println("Пытаюсь подключиться к MySQL...");
+
+        try (Connection connection = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            System.out.println("✅ Успешное подключение к MySQL!");
+            System.out.println("Версия сервера: " + connection.getMetaData().getDatabaseProductVersion());
+        } catch (SQLException e) {
+            System.err.println("❌ Ошибка подключения:");
+            e.printStackTrace();
+
+            // Расшифровка распространенных ошибок
+            if (e.getErrorCode() == 1045) {
+                System.err.println("\nПодсказка: Неверный логин/пароль");
+            } else if (e.getErrorCode() == 1049) {
+                System.err.println("\nПодсказка: База данных не существует");
+            } else if (e.getMessage().contains("Communications link failure")) {
+                System.err.println("\nПодсказка: MySQL сервер не запущен или недоступен");
+            }
         }
     }
 }
