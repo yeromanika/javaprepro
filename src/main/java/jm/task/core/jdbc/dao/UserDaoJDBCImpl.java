@@ -52,6 +52,8 @@ public class UserDaoJDBCImpl implements UserDao {
             statement.setByte(3, age);
             statement.executeUpdate();
 
+            System.out.println("User с именем — " + name + " " + lastName + " добавлен в базу данных");
+
         } catch (SQLException e) {
             System.out.println("Ошибка при сохранении пользователя");
         }
